@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>本人確認 チェックシート｜新人チェッカー用</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@700&display=swap');
+
+  :root {
+    --red: #e8271a;
+    --red-light: #fdf0ef;
+    --navy: #1a2744;
+    --navy-mid: #2c3e6b;
+    --gold: #c8922a;
+    --gold-light: #fdf7ec;
+    --green: #1a7a4a;
+    --green-light: #edf7f2;
+    --gray: #6b7280;
+    --gray-light: #f4f5f7;
+    --border: #dde1e9;
+    --white: #ffffff;
+    --text: #1a1a2e;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: #f0f2f6;
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* ヘッダー */
+  .page-header {
+    background: var(--navy);
+    color: white;
+    padding: 20px 24px 18px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .header-badge {
+    background: var(--red);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 3px;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+  .header-title {
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+  }
+  .header-sub {
+    font-size: 11px;
+    color: rgba(255,255,255,0.6);
+    margin-left: auto;
+    white-space: nowrap;
+  }
+
+  /* ナビゲーション */
+  .nav-tabs {
+    background: var(--navy-mid);
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+  .nav-tab {
+    padding: 10px 18px;
+    color: rgba(255,255,255,0.65);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    letter-spacing: 0.03em;
+  }
+  .nav-tab:hover { color: white; }
+  .nav-tab.active {
+    color: white;
+    border-bottom-color: #f0c040;
+  }
+
+  /* コンテンツ */
+  .content { max-width: 900px; margin: 0 auto; padding: 20px 16px 60px; }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* カードベース */
+  .card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 12px 16px;
+    font-weight: 700;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .card-header.navy { background: var(--navy); color: white; }
+  .card-header.red { background: var(--red); color: white; }
+  .card-header.gold { background: var(--gold); color: white; }
+  .card-header.green { background: var(--green); color: white; }
+  .card-body { padding: 14px 16px; }
+
+  /* フローチャート */
+  .flow-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 14px 16px;
+  }
+  .flow-step {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+  }
+  .flow-left {
+    width: 120px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .flow-node {
+    background: var(--navy);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 7px 10px;
+    border-radius: 6px;
+    text-align: center;
+    width: 100%;
+  }
+  .flow-node.question { background: var(--gold); }
+  .flow-node.ok { background: var(--green); }
+  .flow-node.ng { background: var(--red); }
+  .flow-arrow {
+    width: 2px;
+    background: var(--border);
+    flex-grow: 1;
+    margin: 3px auto;
+    min-height: 12px;
+  }
+  .flow-right {
+    flex: 1;
+    padding: 4px 0 4px 14px;
+    display: flex;
+    align-items: center;
+  }
+  .flow-right .note {
+    font-size: 12px;
+    color: var(--gray);
+    line-height: 1.5;
+  }
+  .flow-right .note strong {
+    color: var(--red);
+    font-weight: 700;
+  }
+
+  /* 4項目チェック */
+  .check-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 14px 16px;
+  }
+  @media (max-width: 560px) {
+    .check-grid { grid-template-columns: 1fr; }
+  }
+  .check-item {
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .check-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--navy);
+    color: white;
+    font-size: 13px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .check-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 3px;
+  }
+  .check-desc {
+    font-size: 11px;
+    color: var(--gray);
+    line-height: 1.5;
+  }
+  .check-desc .alert {
+    color: var(--red);
+    font-weight: 700;
+  }
+
+  /* 書類テーブル */
+  .doc-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  .doc-table th {
+    background: var(--navy);
+    color: white;
+    padding: 9px 10px;
+    text-align: left;
+    font-weight: 700;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+  .doc-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .doc-table tr:last-child td { border-bottom: none; }
+  .doc-table tr:nth-child(even) td { background: var(--gray-light); }
+  .tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+  .tag-a { background: #1a7a4a; color: white; }
+  .tag-b { background: #c8922a; color: white; }
+  .tag-c { background: #6b7280; color: white; }
+  .tag-ng { background: var(--red); color: white; }
+  .tag-warn { background: #f59e0b; color: white; }
+
+  /* 警告ボックス */
+  .alert-box {
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin: 10px 0;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+  .alert-box.red { background: var(--red-light); border-left: 4px solid var(--red); }
+  .alert-box.gold { background: var(--gold-light); border-left: 4px solid var(--gold); }
+  .alert-box.green { background: var(--green-light); border-left: 4px solid var(--green); }
+  .alert-box .icon { font-size: 18px; flex-shrink: 0; line-height: 1.3; }
+  .alert-box strong { font-weight: 700; }
+
+  /* 組み合わせパターン */
+  .pattern-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding: 14px 16px;
+  }
+  @media (max-width: 600px) {
+    .pattern-grid { grid-template-columns: 1fr; }
+  }
+  .pattern-card {
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .pattern-head {
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    color: white;
+  }
+  .pattern-head.ok-head { background: var(--green); }
+  .pattern-head.ng-head { background: var(--red); }
+  .pattern-body {
+    padding: 10px 12px;
+    font-size: 12px;
+    line-height: 1.6;
+    background: white;
+  }
+  .pattern-body .plus {
+    color: var(--navy);
+    font-weight: 700;
+    margin: 4px 0;
+  }
+  .pattern-body .result {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+    font-weight: 700;
+    font-size: 11px;
+  }
+  .pattern-body .result.ok { color: var(--green); }
+  .pattern-body .result.ng { color: var(--red); }
+
+  /* 個別書類セクション */
+  .doc-detail {
+    margin-bottom: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .doc-detail-head {
+    background: var(--gray-light);
+    padding: 9px 14px;
+    font-weight: 700;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .doc-detail-head:hover { background: #e8eaef; }
+  .doc-detail-head .arrow { margin-left: auto; color: var(--gray); transition: transform 0.2s; }
+  .doc-detail-head.open .arrow { transform: rotate(90deg); }
+  .doc-detail-body {
+    display: none;
+    padding: 12px 14px;
+    border-top: 1px solid var(--border);
+    background: white;
+  }
+  .doc-detail-body.open { display: block; }
+
+  .check-list { list-style: none; padding: 0; }
+  .check-list li {
+    padding: 5px 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 12px;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .check-list li:last-child { border-bottom: none; }
+  .check-list li::before {
+    content: "☐";
+    color: var(--navy);
+    font-size: 14px;
+    flex-shrink: 0;
+    line-height: 1.3;
+  }
+  .check-list li.warn::before { content: "⚠️"; }
+  .check-list li.ng-item::before { content: "❌"; }
+
+  .input-info {
+    background: var(--gold-light);
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-top: 10px;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+  .input-info strong { color: var(--gold); }
+
+  /* NG一覧 */
+  .ng-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 14px 16px;
+  }
+  @media (max-width: 560px) { .ng-grid { grid-template-columns: 1fr; } }
+  .ng-item-card {
+    background: var(--red-light);
+    border: 1px solid #f5c6c4;
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+  .ng-item-card .ng-title {
+    font-weight: 700;
+    color: var(--red);
+    font-size: 12px;
+    margin-bottom: 4px;
+  }
+  .ng-item-card .ng-desc {
+    font-size: 11px;
+    color: #7a2020;
+    line-height: 1.5;
+  }
+
+  /* ダブルチェック */
+  .dc-step {
+    display: flex;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+  .dc-step:last-child { border-bottom: none; }
+  .dc-num {
+    width: 32px;
+    height: 32px;
+    background: var(--navy);
+    color: white;
+    border-radius: 50%;
+    font-weight: 900;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .dc-text { flex: 1; }
+  .dc-title { font-weight: 700; font-size: 13px; margin-bottom: 3px; }
+  .dc-desc { font-size: 12px; color: var(--gray); line-height: 1.5; }
+  .dc-desc .red { color: var(--red); font-weight: 700; }
+
+  /* 補助資料 */
+  .aux-pattern {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .aux-pattern:last-child { border-bottom: none; }
+  .aux-title { font-weight: 700; font-size: 12px; color: var(--navy); margin-bottom: 6px; }
+  .aux-flow {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    font-size: 12px;
+  }
+  .aux-box {
+    background: var(--gray-light);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .aux-box.blue { background: #eef2ff; border-color: #c7d2fe; color: #3730a3; }
+  .aux-box.orange { background: #fff7ed; border-color: #fed7aa; color: #c2410c; }
+  .aux-arrow { color: var(--gray); font-size: 14px; }
+  .aux-result {
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--green);
+    font-weight: 700;
+  }
+  .aux-result.ng { color: var(--red); }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <span class="header-badge">新人チェッカー用</span>
+  <span class="header-title">本人確認 チェックシート</span>
+  <span class="header-sub">ルミネカード受付用 ／ 随時参照可</span>
+</div>
+
+<div class="nav-tabs">
+  <div class="nav-tab active" onclick="switchTab('flow')">① 受付の流れ</div>
+  <div class="nav-tab" onclick="switchTab('check4')">② 4点確認</div>
+  <div class="nav-tab" onclick="switchTab('doclist')">③ 書類一覧</div>
+  <div class="nav-tab" onclick="switchTab('docs')">④ 書類別ポイント</div>
+  <div class="nav-tab" onclick="switchTab('aux')">⑤ 補助資料</div>
+  <div class="nav-tab" onclick="switchTab('double')">⑥ ダブルチェック</div>
+  <div class="nav-tab" onclick="switchTab('ng')">⑦ NGパターン</div>
+</div>
+
+<div class="content">
+
+  <!-- ① 受付の流れ -->
+  <div id="section-flow" class="section active">
+    <div class="card">
+      <div class="card-header navy">📋 本人確認の全体フロー</div>
+      <div class="flow-container">
+
+        <div class="flow-step">
+          <div class="flow-left">
+            <div class="flow-node">お客様来店</div>
+            <div class="flow-arrow"></div>
+          </div>
+          <div class="flow-right"><span class="note">お声がけ・着席案内</span></div>
+        </div>
+
+        <div class="flow-step">
+          <div class="flow-left">
+            <div class="flow-node question">書類確認①</div>
+            <div class="flow-arrow"></div>
+          </div>
+          <div class="flow-right"><span class="note">「本人確認書類はお持ちでしょうか？」<br>※<strong>「身分証明書」という言葉はNG（差別用語）</strong></span></div>
+        </div>
+
+        <div class="flow-step">
+          <div class="flow-left">
+            <div class="flow-node question">写真あり？</div>
+            <div class="flow-arrow"></div>
+          </div>
+          <div class="flow-right"><span class="note">写真付き→1点でOK（Aグループ）<br>写真なし→2点必要（B＋BまたはB＋C）</span></div>
+        </div>
+
+        <div class="flow-step">
+          <div class="flow-left">
+            <div class="flow-node">現住所確認</div>
+            <div class="flow-arrow"></div>
+          </div>
+          <div class="flow-right"><span class="note">住所欄を手差しして「こちら現住所でよろしいですか？」<br>旧住所→補助資料が必要</span></div>
+        </div>
+
+        <div class="flow-step">
+          <div class="flow-left">
+            <div class="flow-node">有効期限確認</div>
+            <div class="flow-arrow"></div>
+          </div>
+          <div class="flow-right"><span class="note">期限切れ→受付不可。最初に必ず確認すること</span></div>
+        </div>
+
+        <div class="flow-step">
+          <div class="flow-left">
+            <div class="flow-node ok">受付可能</div>
+            <div class="flow-arrow"></div>
+          </div>
+          <div class="flow-right"><span class="note">タブレット入力へ進む<br>書類は一旦お客様に返却（タブレットで重ねない）</span></div>
+        </div>
+
+        <div class="flow-step">
+          <div class="flow-left">
+            <div class="flow-node">ダブルチェック</div>
+            <div class="flow-arrow"></div>
+          </div>
+          <div class="flow-right"><span class="note">入力完了後、チェッカーが3点確認（氏名・生年月日・住所）</span></div>
+        </div>
+
+        <div class="flow-step">
+          <div class="flow-left">
+            <div class="flow-node ok">送信</div>
+          </div>
+          <div class="flow-right"><span class="note"><strong>チェッカー確認完了後のみ送信。送信後は修正不可！</strong></span></div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="alert-box red">
+      <span class="icon">🚨</span>
+      <div>
+        <strong>絶対に守ること</strong><br>
+        書類確認が不十分なまま受付すると、審査でNG→最初から再入力になります。<br>お客様に多大なご迷惑をかける上、再受付は15分以上かかります。
+      </div>
+    </div>
+
+    <div class="alert-box gold">
+      <span class="icon">💡</span>
+      <div>
+        <strong>少しでも不安な書類はチェッカーへ。チェッカーも不安ならSVへ確認。</strong><br>
+        判断に迷った場合は必ずエスカレーションしてください。自己判断は厳禁です。
+      </div>
+    </div>
+  </div>
+
+  <!-- ② 4点確認 -->
+  <div id="section-check4" class="section">
+    <div class="card">
+      <div class="card-header red">✅ 本人確認の必須4点確認（全て揃わないと受付不可）</div>
+      <div class="check-grid">
+        <div class="check-item">
+          <div class="check-num">1</div>
+          <div>
+            <div class="check-label">原本であること</div>
+            <div class="check-desc">コピー・写真・画像は<span class="alert">絶対にNG</span><br>スマホ画面での提示も不可</div>
+          </div>
+        </div>
+        <div class="check-item">
+          <div class="check-num">2</div>
+          <div>
+            <div class="check-label">有効期限内であること</div>
+            <div class="check-desc">免許証・パスポート等は期限確認必須<br>健康保険証は<span class="alert">2025年12月2日以降使用不可</span></div>
+          </div>
+        </div>
+        <div class="check-item">
+          <div class="check-num">3</div>
+          <div>
+            <div class="check-label">顔写真が本人と一致</div>
+            <div class="check-desc">写真なし書類は対象外<br>髪型変化があっても<span class="alert">目元でさりげなく確認</span></div>
+          </div>
+        </div>
+        <div class="check-item">
+          <div class="check-num">4</div>
+          <div>
+            <div class="check-label">氏名・生年月日・現住所の3点一致</div>
+            <div class="check-desc">申込内容と書類の3点が一致しているか<br>裏面の<span class="alert">変更記載も必ず確認</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header gold">⚠️ 住所に関する特別注意</div>
+      <div class="card-body">
+        <div class="alert-box gold">
+          <span class="icon">📍</span>
+          <div>
+            書類の住所が<strong>旧住所</strong>の場合→<strong>現住所記載の補助資料が必要</strong>です。<br>
+            住所欄を手差しして「こちら現在お住まいの住所でよろしいですか？」と必ず確認してください。
+          </div>
+        </div>
+        <div style="margin-top: 10px; font-size: 12px; line-height: 1.8;">
+          <div>✔ パスポート（2020年2月以降）→ 住所欄なし → <strong>補助資料必須</strong></div>
+          <div>✔ 運転免許証の裏面手書き修正（公印なし）→ 表面住所が現住所なら受付可</div>
+          <div>✔ 健康保険証の住所未記入 → <strong>その場でお客様自身にボールペンで記入してもらう</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ③ 書類一覧 -->
+  <div id="section-doclist" class="section">
+    <div class="card">
+      <div class="card-header navy">📄 受付可能書類 一覧表</div>
+      <div style="padding: 14px 16px 6px;">
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px;">
+          <span class="tag tag-a">A：写真付き1点でOK</span>
+          <span class="tag tag-b">B：2点必要（写真なし）</span>
+          <span class="tag tag-c">C：補助資料のみ（単独不可）</span>
+          <span class="tag tag-ng">使用不可</span>
+          <span class="tag tag-warn">要注意</span>
+        </div>
+      </div>
+      <div style="overflow-x: auto;">
+        <table class="doc-table">
+          <tr>
+            <th>区分</th>
+            <th>書類名</th>
+            <th>有効期限</th>
+            <th>備考</th>
+          </tr>
+          <tr>
+            <td><span class="tag tag-a">A</span></td>
+            <td>運転免許証</td>
+            <td>あり</td>
+            <td>裏面変更記載・公印も確認。手書き修正（公印なし）は表面住所が現住所なら可</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-a">A</span></td>
+            <td>個人番号カード（マイナンバー）</td>
+            <td>あり</td>
+            <td>番号のコピー・メモ厳禁。通知カードは不可</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-a">A</span></td>
+            <td>パスポート（日本国発行）</td>
+            <td>あり</td>
+            <td><span class="tag tag-warn">注意</span> 2020年2月以降交付分は住所欄なし→補助資料必須。住所未記入は本人に記入してもらう</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-a">A</span></td>
+            <td>在留カード</td>
+            <td>あり</td>
+            <td>裏面変更記載も確認</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-a">A</span></td>
+            <td>特別永住者証明書</td>
+            <td>あり</td>
+            <td>裏面変更記載も確認</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-a">A</span></td>
+            <td>身体障害者手帳</td>
+            <td>あり</td>
+            <td>写真付きのもの限定。写真なしタイプは受付不可</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-a">A</span></td>
+            <td>運転経歴証明書（2012年4月2日以降交付）</td>
+            <td>あり</td>
+            <td>運転免許証とは別書類。混同注意</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-b">B</span></td>
+            <td>資格確認書</td>
+            <td>あり</td>
+            <td>「資格情報のお知らせ」は不可。必ず本人確認資料①へ入力</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-b">B</span></td>
+            <td>国民年金手帳（オレンジ色表紙のみ）</td>
+            <td>なし</td>
+            <td>青色手帳（平成9年1月以降・住所欄なし）は受付不可</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-b">B</span></td>
+            <td>母子健康手帳</td>
+            <td>なし</td>
+            <td>母親のみ有効。父・子の本確にはならない</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-ng">使用不可</span></td>
+            <td>健康保険証（各種）</td>
+            <td>—</td>
+            <td>2025年12月2日以降使用不可</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-c">C</span></td>
+            <td>住民票の写し</td>
+            <td>発行から6ヶ月以内</td>
+            <td>単独での受付不可。補助資料としてのみ有効</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-c">C</span></td>
+            <td>戸籍の附票の写し</td>
+            <td>発行から6ヶ月以内</td>
+            <td>同上</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-c">C</span></td>
+            <td>印鑑登録証明書</td>
+            <td>発行から6ヶ月以内</td>
+            <td>印鑑登録証は不可（証明書のみ）</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-c">C</span></td>
+            <td>公共料金領収書（電気・水道・NHK・都市ガス・プロパンガス）</td>
+            <td>領収から6ヶ月以内</td>
+            <td>領収印または口座振替済み記載必須。請求書・明細書は不可。クレカ払いは可</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-c">C</span></td>
+            <td>社会保険料の領収書</td>
+            <td>領収から6ヶ月以内</td>
+            <td>同上</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-c">C</span></td>
+            <td>納税証明書</td>
+            <td>発行から6ヶ月以内</td>
+            <td>同上</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header navy">🔗 書類の組み合わせパターン</div>
+      <div class="pattern-grid">
+        <div class="pattern-card">
+          <div class="pattern-head ok-head">✅ 店頭発行カード可</div>
+          <div class="pattern-body">
+            <div class="plus">Aグループ 1点</div>
+            <div style="font-size: 11px; color: var(--gray);">例）運転免許証のみ</div>
+            <div class="result ok">→ 即日発行OK</div>
+          </div>
+        </div>
+        <div class="pattern-card">
+          <div class="pattern-head ok-head">✅ 店頭発行カード可</div>
+          <div class="pattern-body">
+            <div class="plus">Bグループ 2点</div>
+            <div style="font-size: 11px; color: var(--gray);">例）資格確認書＋母子手帳</div>
+            <div class="result ok">→ 即日発行OK</div>
+          </div>
+        </div>
+        <div class="pattern-card">
+          <div class="pattern-head ok-head">✅ 店頭発行カード可</div>
+          <div class="pattern-body">
+            <div class="plus">Bグループ1点＋Cグループ1点</div>
+            <div style="font-size: 11px; color: var(--gray);">例）資格確認書＋電気領収書</div>
+            <div class="result ok">→ 即日発行OK</div>
+          </div>
+        </div>
+        <div class="pattern-card">
+          <div class="pattern-head ng-head">⚠️ 店頭郵送のみ</div>
+          <div class="pattern-body">
+            <div class="plus">Bグループ 1点のみ</div>
+            <div style="font-size: 11px; color: var(--gray);">例）資格確認書のみ</div>
+            <div class="result ng">→ 即日発行不可<br>本カードのみ申込可（500円商品券）</div>
+          </div>
+        </div>
+        <div class="pattern-card">
+          <div class="pattern-head ng-head">❌ 受付不可</div>
+          <div class="pattern-body">
+            <div class="plus">Cグループのみ</div>
+            <div style="font-size: 11px; color: var(--gray);">例）住民票のみ</div>
+            <div class="result ng">→ 単独では受付不可</div>
+          </div>
+        </div>
+        <div class="pattern-card">
+          <div class="pattern-head ng-head">❌ 受付不可</div>
+          <div class="pattern-body">
+            <div class="plus">健康保険証（各種）</div>
+            <div style="font-size: 11px; color: var(--gray);">2025年12月2日以降</div>
+            <div class="result ng">→ 使用不可</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ④ 書類別ポイント -->
+  <div id="section-docs" class="section">
+
+    <div class="alert-box gold" style="margin-bottom: 12px;">
+      <span class="icon">👆</span>
+      <div>各書類をタップすると確認ポイントが開きます</div>
+    </div>
+
+    <div class="doc-detail">
+      <div class="doc-detail-head" onclick="toggleDoc(this)">
+        <span class="tag tag-a">A</span> 運転免許証
+        <span class="arrow">▶</span>
+      </div>
+      <div class="doc-detail-body">
+        <ul class="check-list">
+          <li>氏名・住所・生年月日が申込内容と一致しているか</li>
+          <li>写真の人物と同一人物か（さりげなく確認）</li>
+          <li>有効期限内か</li>
+          <li>公印（公安委員会発行印）があるか</li>
+          <li class="warn">裏面に変更事項の記載はないか → 公印があれば裏面住所が有効</li>
+          <li class="ng-item">住所が手書き修正（公印なし）→ 表面住所が現住所なら可。旧住所なら補助資料必要</li>
+        </ul>
+        <div class="input-info">
+          <strong>📝 取引時確認欄入力：</strong>証明書No.（12桁の数字）
+        </div>
+      </div>
+    </div>
+
+    <div class="doc-detail">
+      <div class="doc-detail-head" onclick="toggleDoc(this)">
+        <span class="tag tag-a">A</span> 個人番号カード（マイナンバー）
+        <span class="arrow">▶</span>
+      </div>
+      <div class="doc-detail-body">
+        <ul class="check-list">
+          <li>氏名・住所・生年月日が申込内容と一致しているか</li>
+          <li>写真の人物と同一人物か</li>
+          <li>有効期限内か</li>
+          <li class="ng-item">「マイナンバー通知カード」は本人確認書類として無効</li>
+          <li class="ng-item">個人番号のコピー・メモは番号法違反（厳禁）</li>
+        </ul>
+        <div class="input-info">
+          <strong>📝 取引時確認欄入力：</strong>有効期限（○○年○月○日まで）
+        </div>
+      </div>
+    </div>
+
+    <div class="doc-detail">
+      <div class="doc-detail-head" onclick="toggleDoc(this)">
+        <span class="tag tag-a">A</span> パスポート（日本国発行）
+        <span class="arrow">▶</span>
+      </div>
+      <div class="doc-detail-body">
+        <ul class="check-list">
+          <li>氏名・生年月日が申込内容と一致しているか</li>
+          <li>写真の人物と同一人物か</li>
+          <li>有効期限内か</li>
+          <li>公印（外務大臣印）があるか</li>
+          <li class="warn">2020年2月以降交付分は住所欄なし → 現住所の補助資料が必要</li>
+          <li class="warn">住所欄未記入 → その場でお客様自身にボールペンで記入してもらう</li>
+          <li class="warn">旧住所記載の場合も新住所を記入してもらう</li>
+        </ul>
+        <div class="input-info">
+          <strong>📝 取引時確認欄入力：</strong>旅券番号（9桁の英数字）
+        </div>
+      </div>
+    </div>
+
+    <div class="doc-detail">
+      <div class="doc-detail-head" onclick="toggleDoc(this)">
+        <span class="tag tag-a">A</span> 在留カード ／ 特別永住者証明書
+        <span class="arrow">▶</span>
+      </div>
+      <div class="doc-detail-body">
+        <ul class="check-list">
+          <li>氏名・住所・生年月日が申込内容と一致しているか</li>
+          <li>写真の人物と同一人物か</li>
+          <li>有効期限内か</li>
+          <li>表面に公印（発行者職印）があるか</li>
+          <li class="warn">裏面に住所変更記載がある場合 → 市区町村印があれば有効</li>
+        </ul>
+        <div class="input-info">
+          <strong>📝 取引時確認欄入力：</strong>証明書No.（12桁の英数字）
+        </div>
+      </div>
+    </div>
+
+    <div class="doc-detail">
+      <div class="doc-detail-head" onclick="toggleDoc(this)">
+        <span class="tag tag-b">B</span> 資格確認書
+        <span class="arrow">▶</span>
+      </div>
+      <div class="doc-detail-body">
+        <div class="alert-box red" style="margin-bottom: 10px;">
+          <span class="icon">⚠️</span>
+          <div>「資格情報のお知らせ」は本人確認書類として不可。資格確認書のみ有効。</div>
+        </div>
+        <ul class="check-list">
+          <li>氏名・住所・生年月日が申込内容と一致しているか</li>
+          <li>有効期限内か</li>
+          <li>公印があるか</li>
+          <li>必ず本人確認資料①に入力する（②ではなく①）</li>
+        </ul>
+        <div class="input-info">
+          <strong>📝 取引時確認欄入力：</strong>正式名称・交付年月日・発行主体（保険者名称）<br>
+          タブレット入力：「その他、官公庁から発行、または発給された書類（写真無①）」を選択
+        </div>
+      </div>
+    </div>
+
+    <div class="doc-detail">
+      <div class="doc-detail-head" onclick="toggleDoc(this)">
+        <span class="tag tag-b">B</span> 国民年金手帳
+        <span class="arrow">▶</span>
+      </div>
+      <div class="doc-detail-body">
+        <ul class="check-list">
+          <li>氏名・住所・生年月日が申込内容と一致しているか</li>
+          <li class="ng-item">青色手帳（平成9年1月以降発行・住所欄なし）→ 受付不可</li>
+          <li>オレンジ色表紙のもののみ有効</li>
+        </ul>
+        <div class="input-info">
+          <strong>📝 取引時確認欄入力：</strong>被保険者となった日（○年○月○日）
+        </div>
+      </div>
+    </div>
+
+    <div class="doc-detail">
+      <div class="doc-detail-head" onclick="toggleDoc(this)">
+        <span class="tag tag-b">B</span> 母子健康手帳
+        <span class="arrow">▶</span>
+      </div>
+      <div class="doc-detail-body">
+        <ul class="check-list">
+          <li>母親の氏名・住所・生年月日が申込内容と一致しているか</li>
+          <li>公印（各地方自治体印）があるか ※子が出生するまで公印なし</li>
+          <li class="ng-item">父・子の本人確認書類にはならない（母親専用）</li>
+        </ul>
+        <div class="input-info">
+          <strong>📝 取引時確認欄入力：</strong>発行元の市区町村・証明書No.・交付年月日
+        </div>
+      </div>
+    </div>
+
+    <div class="doc-detail">
+      <div class="doc-detail-head" onclick="toggleDoc(this)">
+        <span class="tag tag-ng">使用不可</span> 健康保険証（各種）
+        <span class="arrow">▶</span>
+      </div>
+      <div class="doc-detail-body">
+        <div class="alert-box red">
+          <span class="icon">🚫</span>
+          <div>
+            <strong>2025年12月2日以降、本人確認書類として使用不可。</strong><br>
+            健康保険証・国民健康保険証・船員保険被保険者証・後期高齢者医療被保険者証・各共済組合員証・私立学校教職員共済加入証 すべて対象。<br>
+            お持ちの場合は資格確認書または他のAグループ書類へ案内してください。
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ⑤ 補助資料 -->
+  <div id="section-aux" class="section">
+    <div class="card">
+      <div class="card-header gold">📎 補助資料が必要なケースと対応</div>
+      <div class="card-body">
+        <div class="alert-box gold">
+          <span class="icon">💡</span>
+          <div>補助資料は「住所を現住所で確認するための書類」です。<br>単独では受付できません。必ずAまたはBの書類と組み合わせて使用します。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header navy">🔍 代表的な補助資料パターン</div>
+
+      <div class="aux-pattern">
+        <div class="aux-title">パターン1：写真付き書類の住所が旧住所 ＋ 補助資料が資格確認書</div>
+        <div class="aux-flow">
+          <div class="aux-box blue">A：運転免許証（旧住所）</div>
+          <span class="aux-arrow">＋</span>
+          <div class="aux-box orange">補助：資格確認書（現住所）</div>
+        </div>
+        <div class="aux-result">→ 店頭発行カード即日発行 OK</div>
+      </div>
+
+      <div class="aux-pattern">
+        <div class="aux-title">パターン2：写真付き書類の住所が旧住所 ＋ 補助資料が公共料金領収書</div>
+        <div class="aux-flow">
+          <div class="aux-box blue">A：運転免許証（旧住所）</div>
+          <span class="aux-arrow">＋</span>
+          <div class="aux-box orange">補助：電気領収書（現住所）</div>
+        </div>
+        <div class="aux-result">→ 店頭発行カード即日発行 OK</div>
+      </div>
+
+      <div class="aux-pattern">
+        <div class="aux-title">パターン3：写真なし書類1点 ＋ 公共料金領収書</div>
+        <div class="aux-flow">
+          <div class="aux-box blue">B：資格確認書</div>
+          <span class="aux-arrow">＋</span>
+          <div class="aux-box orange">C：電気領収書</div>
+        </div>
+        <div class="aux-result">→ 店頭発行カード即日発行 OK</div>
+      </div>
+
+      <div class="aux-pattern">
+        <div class="aux-title">パターン4：写真なし書類1点のみ（補助資料なし）</div>
+        <div class="aux-flow">
+          <div class="aux-box blue">B：資格確認書のみ</div>
+        </div>
+        <div class="aux-result ng">→ 即日発行不可。本カードのみ申込可（500円商品券）</div>
+      </div>
+
+    </div>
+
+    <div class="card">
+      <div class="card-header navy">📋 補助資料として使える書類</div>
+      <div style="overflow-x: auto;">
+        <table class="doc-table">
+          <tr>
+            <th>書類名</th>
+            <th>有効期間</th>
+            <th>注意点</th>
+          </tr>
+          <tr>
+            <td>住民票の写し</td>
+            <td>発行から6ヶ月以内</td>
+            <td>住民票の記載事項証明書も可</td>
+          </tr>
+          <tr>
+            <td>戸籍の附票の写し</td>
+            <td>発行から6ヶ月以内</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td>印鑑登録証明書</td>
+            <td>発行から6ヶ月以内</td>
+            <td>印鑑登録証は不可（証明書のみ）</td>
+          </tr>
+          <tr>
+            <td>公共料金領収書<br>（電気・水道・NHK・都市ガス・プロパンガス）</td>
+            <td>領収から6ヶ月以内</td>
+            <td>領収印または口座振替済み記載必須。請求書・明細書は不可。クレカ払いは可。お客様自身のダウンロード・プリントアウト不可</td>
+          </tr>
+          <tr>
+            <td>社会保険料の領収書</td>
+            <td>領収から6ヶ月以内</td>
+            <td>同上</td>
+          </tr>
+          <tr>
+            <td>納税証明書</td>
+            <td>発行から6ヶ月以内</td>
+            <td>国税・地方税どちらも可</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑥ ダブルチェック -->
+  <div id="section-double" class="section">
+    <div class="card">
+      <div class="card-header red">🔍 ダブルチェック時の確認手順</div>
+      <div class="card-body">
+        <div class="alert-box red">
+          <span class="icon">🚨</span>
+          <div><strong>氏名・生年月日・住所の誤りは送信後修正不可→再申込確定です。</strong><br>チェッカーによる最終確認完了後のみ送信してください。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header navy">確認ステップ</div>
+      <div class="card-body">
+        <div class="dc-step">
+          <div class="dc-num">1</div>
+          <div class="dc-text">
+            <div class="dc-title">店舗名の確認</div>
+            <div class="dc-desc">画面右上の店舗名が<span class="red">当日の勤務店舗</span>になっているか確認。別店舗IDでのログインは重大ミス。</div>
+          </div>
+        </div>
+        <div class="dc-step">
+          <div class="dc-num">2</div>
+          <div class="dc-text">
+            <div class="dc-title">氏名の確認</div>
+            <div class="dc-desc">漢字・カナ・ローマ字すべて本人確認書類と一致しているか。旧字体・異体字の表記ズレに注意（髙・﨑・濵など）。</div>
+          </div>
+        </div>
+        <div class="dc-step">
+          <div class="dc-num">3</div>
+          <div class="dc-text">
+            <div class="dc-title">生年月日の確認</div>
+            <div class="dc-desc">書類と完全一致しているか。同じ数字が連続する場合（例：1-1-1）は特に見落とし注意。</div>
+          </div>
+        </div>
+        <div class="dc-step">
+          <div class="dc-num">4</div>
+          <div class="dc-text">
+            <div class="dc-title">住所の確認</div>
+            <div class="dc-desc"><span class="red">丁目の重複入力が最多ミス。</span>番地・建物名・部屋番号まで確認。マンション名と部屋番号の間に「－」があるか。フリガナも確認。</div>
+          </div>
+        </div>
+        <div class="dc-step">
+          <div class="dc-num">5</div>
+          <div class="dc-text">
+            <div class="dc-title">電話番号の確認</div>
+            <div class="dc-desc">一人暮らし学生が実家番号を入力するケース多数。電話番号が誤っていると審査が止まる。</div>
+          </div>
+        </div>
+        <div class="dc-step">
+          <div class="dc-num">6</div>
+          <div class="dc-text">
+            <div class="dc-title">本人確認書類欄の確認</div>
+            <div class="dc-desc">書類の種別・証明書番号・確認者名が正しく入力されているか。印象欄は原則「○」（誤って◎を入れると審査停止）。</div>
+          </div>
+        </div>
+        <div class="dc-step">
+          <div class="dc-num">7</div>
+          <div class="dc-text">
+            <div class="dc-title">確認者名の確認</div>
+            <div class="dc-desc">最下部の確認者欄が<span class="red">自分の名前</span>になっているか確認。違う場合は戻って再ログイン。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header gold">⚠️ 旧字体・異体字 要注意一覧</div>
+      <div class="card-body">
+        <div style="font-size: 12px; margin-bottom: 8px; color: var(--gray);">下記はタブレット変換で出てくる異体字です。本人確認書類と同じ表記で入力してください。</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px; font-size: 13px;">
+          <span style="background: #eef2ff; padding: 4px 10px; border-radius: 4px; border: 1px solid #c7d2fe;">高→<strong>髙</strong></span>
+          <span style="background: #eef2ff; padding: 4px 10px; border-radius: 4px; border: 1px solid #c7d2fe;">崎→<strong>﨑</strong></span>
+          <span style="background: #eef2ff; padding: 4px 10px; border-radius: 4px; border: 1px solid #c7d2fe;">濱→<strong>濵</strong></span>
+          <span style="background: #eef2ff; padding: 4px 10px; border-radius: 4px; border: 1px solid #c7d2fe;">辺→<strong>邉・邊</strong></span>
+          <span style="background: #eef2ff; padding: 4px 10px; border-radius: 4px; border: 1px solid #c7d2fe;">斉→<strong>斎・齋・齊</strong></span>
+          <span style="background: #eef2ff; padding: 4px 10px; border-radius: 4px; border: 1px solid #c7d2fe;">恵→<strong>惠</strong></span>
+          <span style="background: #eef2ff; padding: 4px 10px; border-radius: 4px; border: 1px solid #c7d2fe;">徳→<strong>德</strong></span>
+          <span style="background: #eef2ff; padding: 4px 10px; border-radius: 4px; border: 1px solid #c7d2fe;">瀬→<strong>瀨</strong></span>
+          <span style="background: #eef2ff; padding: 4px 10px; border-radius: 4px; border: 1px solid #c7d2fe;">来→<strong>來</strong></span>
+          <span style="background: #eef2ff; padding: 4px 10px; border-radius: 4px; border: 1px solid #c7d2fe;">広→<strong>廣</strong></span>
+          <span style="background: #eef2ff; padding: 4px 10px; border-radius: 4px; border: 1px solid #c7d2fe;">栄→<strong>榮</strong></span>
+          <span style="background: #eef2ff; padding: 4px 10px; border-radius: 4px; border: 1px solid #c7d2fe;">渋→<strong>澁</strong></span>
+        </div>
+        <div style="margin-top: 12px; font-size: 12px; color: var(--gray);">
+          ⚠️ タブレット変換不可の旧字体（藤・塚・辻の点1つなど）は常用漢字で入力し、メモ欄に<br>「氏名漢字入力通りでお客様了承済み」と記入。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑦ NGパターン -->
+  <div id="section-ng" class="section">
+    <div class="card">
+      <div class="card-header red">❌ 受付NGになる主なパターン</div>
+      <div class="ng-grid">
+        <div class="ng-item-card">
+          <div class="ng-title">コピー・画像での提示</div>
+          <div class="ng-desc">スマホ画面も含め原本以外は一切不可。</div>
+        </div>
+        <div class="ng-item-card">
+          <div class="ng-title">有効期限切れ</div>
+          <div class="ng-desc">受付開始前に必ず確認。切れていたら他の書類へ。</div>
+        </div>
+        <div class="ng-item-card">
+          <div class="ng-title">住所が旧住所のまま（補助資料なし）</div>
+          <div class="ng-desc">現住所を確認できる書類がなければ即日発行不可。</div>
+        </div>
+        <div class="ng-item-card">
+          <div class="ng-title">健康保険証（2025年12月2日以降）</div>
+          <div class="ng-desc">廃止済み。資格確認書または他のA書類へ案内。</div>
+        </div>
+        <div class="ng-item-card">
+          <div class="ng-title">マイナンバー通知カード</div>
+          <div class="ng-desc">個人番号カードとは別物。通知カードは不可。</div>
+        </div>
+        <div class="ng-item-card">
+          <div class="ng-title">青色の国民年金手帳</div>
+          <div class="ng-desc">平成9年1月以降発行で住所欄なし→受付不可。オレンジ色のみ有効。</div>
+        </div>
+        <div class="ng-item-card">
+          <div class="ng-title">Cグループのみ</div>
+          <div class="ng-desc">住民票・領収書等単独では受付不可。A or Bと組み合わせ必須。</div>
+        </div>
+        <div class="ng-item-card">
+          <div class="ng-title">母子手帳で父・子の申込</div>
+          <div class="ng-desc">母親の本確書類。父・子の申込には使えない。</div>
+        </div>
+        <div class="ng-item-card">
+          <div class="ng-title">請求書・明細書（公共料金）</div>
+          <div class="ng-desc">補助資料は領収書のみ有効。請求書・明細書は不可。</div>
+        </div>
+        <div class="ng-item-card">
+          <div class="ng-title">自己プリント領収書</div>
+          <div class="ng-desc">お客様がダウンロード・プリントアウトした領収書は不可。</div>
+        </div>
+        <div class="ng-item-card">
+          <div class="ng-title">同一の書類2点</div>
+          <div class="ng-desc">B2点提示の場合、同じ書類を2枚持参しても不可。</div>
+        </div>
+        <div class="ng-item-card">
+          <div class="ng-title">写真なし住民基本台帳カード</div>
+          <div class="ng-desc">写真なしタイプは生年月日・住所の記載がないため受付不可。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert-box gold" style="margin-top: 4px;">
+      <span class="icon">📞</span>
+      <div>
+        <strong>判断に迷ったら必ずSVへ確認。</strong><br>
+        SVも判断できない場合は審査・発行センター（03-6275-3035）へ問い合わせます。<br>
+        自己判断での受付は絶対にしないでください。
+      </div>
+    </div>
+  </div>
+
+</div><!-- end content -->
+
+<script>
+function switchTab(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('section-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+function toggleDoc(el) {
+  const body = el.nextElementSibling;
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open');
+  el.classList.toggle('open');
+}
+</script>
+
+</body>
+</html>
